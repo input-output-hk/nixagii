@@ -1,0 +1,3 @@
+{
+  "*.enc.yaml" = "diff=sopsdiffer";
+}
