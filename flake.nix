@@ -59,6 +59,15 @@
           ];
           inherit __functor;
         };
+      gh-jira-integration = system: project:
+        with nixpkgs.legacyPackages.${system}; {
+          configData = import ./gh-jira-integration.nix project;
+          output = ".github/workflow/jira-integration.yml";
+          format = "yaml";
+          packages = [];
+          commands = [{package = gh;}];
+          inherit __functor;
+        };
       gitattributes = system:
         with nixpkgs.legacyPackages.${system}; {
           configData = import ./gitattributes.nix;
