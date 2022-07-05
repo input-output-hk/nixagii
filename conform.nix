@@ -15,8 +15,6 @@
         "test"
       ];
       scopes = [
-        "metal"
-        "cloud"
         "automation"
       ];
     };

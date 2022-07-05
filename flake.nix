@@ -114,7 +114,7 @@
             })
             (conform {
               commit.conventional.scopes = data-merge.append (builtins.attrNames (
-                builtins.removeAttrs self ((builtins.attrNames self.sourceInfo) ++ ["sourceInfo" "outputs" "inputs"])
+                builtins.removeAttrs self ((builtins.attrNames self.sourceInfo) ++ ["sourceInfo" "outputs" "inputs" "makeAll"])
               ));
             })
             lefthook
