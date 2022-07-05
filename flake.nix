@@ -61,8 +61,9 @@
       };
       gh-jira-integration = project: {
         configData = import ./gh-jira-integration.nix project;
-        output = ".github/workflow/jira-integration.yml";
+        output = ".github/workflows/jira-integration.yml";
         format = "yaml";
+        hook.mode = "copy";
         packages = [];
         commands = [{package = pkgs.gh;}];
         inherit __functor;
