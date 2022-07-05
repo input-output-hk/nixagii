@@ -51,14 +51,19 @@ labels:
     description: This issue is prioritized as low
     name: 'Priority: Low'
   - color: '#4CAF50'
+    description: This issue is of low complexity or very well understood
     name: 'Effort: 1'
   - color: '#81C784'
+    description: This issue is still almost of low complexity or still almost well understood
     name: 'Effort: 2'
   - color: '#FFEE58'
+    description: This issue is of medium complexity or only partly well understood
     name: 'Effort: 3'
   - color: '#FB8C00'
+    description: This issue is still almost of medium complexity or only partly understood
     name: 'Effort: 4'
   - color: '#F44336'
+    description: This issue is of high complexity or just not yet well understood
     name: 'Effort: 5'
 repository:
   default_branch: main

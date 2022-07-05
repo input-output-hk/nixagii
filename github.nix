@@ -108,22 +108,27 @@ in {
     # Effort
     {
       name = "Effort: 1";
+      description = "This issue is of low complexity or very well understood";
       color = colors.green;
     }
     {
       name = "Effort: 2";
+      description = "This issue is still almost of low complexity or still almost well understood";
       color = colors.lightGreen;
     }
     {
       name = "Effort: 3";
+      description = "This issue is of medium complexity or only partly well understood";
       color = colors.yellow;
     }
     {
       name = "Effort: 4";
+      description = "This issue is still almost of medium complexity or only partly understood";
       color = colors.orange;
     }
     {
       name = "Effort: 5";
+      description = "This issue is of high complexity or just not yet well understood";
       color = colors.red;
     }
   ];
