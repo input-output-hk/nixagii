@@ -24,114 +24,112 @@
       // {
         configData = data-merge.merge self.configData extra;
       };
-  in
-    {
-      treefmt = system:
-        with nixpkgs.legacyPackages.${system}; {
-          configData = import ./treefmt.nix;
-          output = "treefmt.toml";
-          format = "toml";
-          packages = [alejandra nodePackages.prettier nodePackages.prettier-plugin-toml shfmt treefmt];
-          commands = [{package = treefmt;}];
-          inherit __functor;
-        };
-      editorconfig = system:
-        with nixpkgs.legacyPackages.${system}; {
-          configData = import ./editorconfig.nix;
-          output = ".editorconfig";
-          format = "ini";
-          hook.mode = "copy";
-          packages = [editorconfig-checker];
+  in (flake-utils.lib.eachDefaultSystem (
+    system: let
+      pkgs = nixpkgs.legacyPackages.${system};
+    in rec {
+      # --- Nixagii Pebbles ---------------------------------------------
+      treefmt = {
+        configData = import ./treefmt.nix;
+        output = "treefmt.toml";
+        format = "toml";
+        packages = [pkgs.alejandra pkgs.nodePackages.prettier pkgs.nodePackages.prettier-plugin-toml pkgs.shfmt pkgs.treefmt];
+        commands = [{package = treefmt;}];
+        inherit __functor;
+      };
+      editorconfig = {
+        configData = import ./editorconfig.nix;
+        output = ".editorconfig";
+        format = "ini";
+        hook.mode = "copy";
+        packages = [pkgs.editorconfig-checker];
+        commands = [];
+        inherit __functor;
+      };
+      jira = project: {
+        configData = import ./jira.nix project;
+        output = ".jira.d/config.yml";
+        format = "yaml";
+        packages = [];
+        commands = [
+          {
+            package = pkgs.go-jira;
+            name = "jira";
+          }
+        ];
+        inherit __functor;
+      };
+      gh-jira-integration = project: {
+        configData = import ./gh-jira-integration.nix project;
+        output = ".github/workflow/jira-integration.yml";
+        format = "yaml";
+        packages = [];
+        commands = [{package = pkgs.gh;}];
+        inherit __functor;
+      };
+      gitattributes = {
+        configData = import ./gitattributes.nix;
+        output = ".gitattributes";
+        format = "ignore";
+        hook.mode = "copy";
+        packages = [];
+        commands = [];
+        inherit __functor;
+      };
+      ghsettings =
+        {
+          packages = [];
           commands = [];
-          inherit __functor;
-        };
-      jira = system: project:
-        with nixpkgs.legacyPackages.${system}; {
-          configData = import ./jira.nix project;
-          output = ".jira.d/config.yml";
-          format = "yaml";
-          packages = [];
-          commands = [
-            {
-              package = go-jira;
-              name = "jira";
-            }
-          ];
-          inherit __functor;
-        };
-      gh-jira-integration = system: project:
-        with nixpkgs.legacyPackages.${system}; {
-          configData = import ./gh-jira-integration.nix project;
-          output = ".github/workflow/jira-integration.yml";
-          format = "yaml";
-          packages = [];
-          commands = [{package = gh;}];
-          inherit __functor;
-        };
-      gitattributes = system:
-        with nixpkgs.legacyPackages.${system}; {
-          configData = import ./gitattributes.nix;
-          output = ".gitattributes";
-          format = "ignore";
-          hook.mode = "copy";
-          packages = [];
+        }
+        // (nixago-exts.ghsettings.${system} (import ./github.nix));
+      conform =
+        {
+          packages = [pkgs.conform];
           commands = [];
-          inherit __functor;
-        };
-      ghsettings = system:
-        with nixpkgs.legacyPackages.${system};
-          {
-            packages = [];
-            commands = [];
-          }
-          // (nixago-exts.ghsettings.${system} (import ./github.nix));
-      conform = system:
-        with nixpkgs.legacyPackages.${system};
-          {
-            packages = [conform];
-            commands = [];
-          }
-          // (nixago-exts.conform.${system} (import ./conform.nix));
-      lefthook = system:
-        with nixpkgs.legacyPackages.${system};
-          {
-            packages = [lefthook];
-            commands = [];
-          }
-          // (nixago-exts.lefthook.${system} (import ./lefthook.nix));
+        }
+        // (nixago-exts.conform.${system} (import ./conform.nix));
+      lefthook =
+        {
+          packages = [pkgs.lefthook];
+          commands = [];
+        }
+        // (nixago-exts.lefthook.${system} (import ./lefthook.nix));
+      # -----------------------------------------------------------------
+
+      # --- Auxiliary Outputs -------------------------------------------
+      inherit (nixago.lib.${system}) makeAll;
+
+      devShells.default = nixpkgs.legacyPackages.${system}.mkShell {
+        inherit
+          (makeAll [
+            treefmt
+            editorconfig
+            (ghsettings {
+              repository = {
+                name = "nixagii";
+                description = "Nixago Pebbles for IOG";
+                topics = "devshell, devx, sre";
+                default_branch = "main";
+              };
+            })
+            (conform {
+              commit.conventional.scopes = data-merge.append (builtins.attrNames (
+                builtins.removeAttrs self ((builtins.attrNames self.sourceInfo) ++ ["sourceInfo" "outputs" "inputs"])
+              ));
+            })
+            lefthook
+          ])
+          shellHook
+          ;
+        packages =
+          []
+          ++ treefmt.packages
+          ++ editorconfig.packages
+          ++ conform.packages
+          ++ ghsettings.packages
+          ++ lefthook.packages;
+      };
+      # -----------------------------------------------------------------
     }
-    // (flake-utils.lib.eachDefaultSystem (
-      system: {
-        # Configure local development shell
-        devShells.default = nixpkgs.legacyPackages.${system}.mkShell {
-          shellHook =
-            (nixago.lib.${system}.makeAll [
-              (self.treefmt system)
-              (self.editorconfig system)
-              (self.ghsettings system {
-                repository = {
-                  name = "nixagii";
-                  description = "Nixago Pebbles for IOG";
-                  topics = "devshell, devx, sre";
-                  default_branch = "main";
-                };
-              })
-              (self.conform system {
-                commit.conventional.scopes = data-merge.append (builtins.attrNames (
-                  builtins.removeAttrs self ((builtins.attrNames self.sourceInfo) ++ ["sourceInfo" "outputs" "inputs"])
-                ));
-              })
-              (self.lefthook system)
-            ])
-            .shellHook;
-          packages =
-            []
-            ++ (self.treefmt system).packages
-            ++ (self.editorconfig system).packages
-            ++ (self.conform system).packages
-            ++ (self.ghsettings system).packages
-            ++ (self.lefthook system).packages;
-        };
-      }
-    ));
+  ));
 }
