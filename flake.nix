@@ -34,7 +34,7 @@
         output = "treefmt.toml";
         format = "toml";
         packages = [pkgs.alejandra pkgs.nodePackages.prettier pkgs.nodePackages.prettier-plugin-toml pkgs.shfmt pkgs.treefmt];
-        commands = [{package = treefmt;}];
+        commands = [{package = pkgs.treefmt;}];
         inherit __functor;
       };
       editorconfig = {
