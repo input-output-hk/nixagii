@@ -59,9 +59,9 @@
         ];
         inherit __functor;
       };
-      gh-jira-integration = project: {
-        configData = import ./gh-jira-integration.nix project;
-        output = ".github/workflows/jira-integration.yml";
+      gh-jira-integration = project: event: {
+        configData = (import ./gh-jira-integration.nix project).${event};
+        output = ".github/workflows/jira-integration-${event}.yml";
         format = "yaml";
         hook.mode = "copy";
         packages = [];

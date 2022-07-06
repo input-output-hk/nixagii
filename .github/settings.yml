@@ -26,9 +26,6 @@ labels:
   - color: '#F44336'
     description: This issue targets a bug
     name: 'Type: Bug'
-  - color: '#64B5F6'
-    description: This issue targets a new feature
-    name: 'Type: Feature'
   - color: '#FB8C00'
     description: This issue targets general maintenance
     name: 'Type: Maintenance'
@@ -38,18 +35,21 @@ labels:
   - color: '#F44336'
     description: This issue targets a security vulnerability
     name: 'Type: Security'
+  - color: '#64B5F6'
+    description: This issue targets a new feature through a story
+    name: 'Type: Story'
   - color: '#F44336'
     description: This issue is prioritized as critical
     name: 'Priority: Critical'
   - color: '#FB8C00'
     description: This issue is prioritized as high
     name: 'Priority: High'
-  - color: '#FFEE58'
-    description: This issue is prioritized as medium
-    name: 'Priority: Medium'
   - color: '#4CAF50'
     description: This issue is prioritized as low
     name: 'Priority: Low'
+  - color: '#FFEE58'
+    description: This issue is prioritized as medium
+    name: 'Priority: Medium'
   - color: '#4CAF50'
     description: This issue is of low complexity or very well understood
     name: 'Effort: 1'
