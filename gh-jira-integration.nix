@@ -25,7 +25,7 @@
  */
 project: let
   # the current environment
-  JIRA_BASE_URL = "https://iog-uat.atlassian.net/";
+  JIRA_BASE_URL = "https://input-output.atlassian.net/";
   mappings = import ./gh-jira-integration-maps.nix;
 
   login-step = {
