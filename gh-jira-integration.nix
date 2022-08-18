@@ -1,28 +1,28 @@
 /*
- 
- This file implements GH workflows for the unidirectional synchornization
- from GitHub to Jira.
- 
- The TL;DR; docs at time of writing are:
- ---------------------------------------
- 
- Contexts -> Events -> [Issues|Pulls|Commits]
- 
- Contexts: https://docs.github.com/en/actions/learn-github-actions/contexts
- -> Events: https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads
-   -> Issues: https://docs.github.com/en/rest/issues/issues
-   -> Pulls: https://docs.github.com/en/rest/pulls/pulls#get-a-pull-request
-   -> Commits: https://docs.github.com/en/rest/commits/commits#get-a-commit
- 
- Synopsis:
- 
- Accessor event:   `github.event`
- Accessor issue:   `github.event.issue`
- Accessor pull:    `github.event.pull`
- Accessor commits: `github.event.commits`
- 
- The mapping strategy is explained on each job for issue|pull|commit events.
- */
+
+This file implements GH workflows for the unidirectional synchornization
+from GitHub to Jira.
+
+The TL;DR; docs at time of writing are:
+---------------------------------------
+
+Contexts -> Events -> [Issues|Pulls|Commits]
+
+Contexts: https://docs.github.com/en/actions/learn-github-actions/contexts
+-> Events: https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads
+  -> Issues: https://docs.github.com/en/rest/issues/issues
+  -> Pulls: https://docs.github.com/en/rest/pulls/pulls#get-a-pull-request
+  -> Commits: https://docs.github.com/en/rest/commits/commits#get-a-commit
+
+Synopsis:
+
+Accessor event:   `github.event`
+Accessor issue:   `github.event.issue`
+Accessor pull:    `github.event.pull`
+Accessor commits: `github.event.commits`
+
+The mapping strategy is explained on each job for issue|pull|commit events.
+*/
 project: let
   # the current environment
   JIRA_BASE_URL = "https://input-output.atlassian.net/";
